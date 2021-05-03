@@ -1,4 +1,4 @@
-package com.icaroerasmo;
+package com.icaroerasmo.data;
 
 public class TuplaBuilder {
 	

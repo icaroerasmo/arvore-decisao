@@ -1,4 +1,4 @@
-package com.icaroerasmo;
+package com.icaroerasmo.data;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.icaroerasmo.Util;
 
 public class Database {
 	
@@ -50,13 +52,6 @@ public class Database {
 		}
 		
 		return frequencias;
-	}
-
-	private Set<String> valoresUnicosColuna(String coluna) {
-		Set<String> valoresUnicosColunaRotulo = tuplas.stream().
-				map(t -> t.getAsString(coluna)).
-				collect(Collectors.toSet());
-		return valoresUnicosColunaRotulo;
 	}
 	
 	private Double calculaEntropia() {
@@ -107,6 +102,13 @@ public class Database {
 				toMap(c -> c, c -> calculoGanho(c)));
 		
 		return ganhos;
+	}
+	
+	private Set<String> valoresUnicosColuna(String coluna) {
+		Set<String> valoresUnicosColunaRotulo = tuplas.stream().
+				map(t -> t.getAsString(coluna)).
+				collect(Collectors.toSet());
+		return valoresUnicosColunaRotulo;
 	}
 	
 	public static Database carregaDatabase(String arquivoCSV) {

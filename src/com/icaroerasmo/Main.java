@@ -1,5 +1,7 @@
 package com.icaroerasmo;
 
+import com.icaroerasmo.data.Database;
+
 public class Main {
 
 	public static void main(String[] args) {

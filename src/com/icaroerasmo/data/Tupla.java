@@ -1,4 +1,4 @@
-package com.icaroerasmo;
+package com.icaroerasmo.data;
 
 import java.util.HashSet;
 import java.util.List;
