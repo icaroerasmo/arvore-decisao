@@ -1,5 +1,9 @@
 package com.icaroerasmo;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +17,9 @@ public class Database {
 	
 	private String colunaRotulo;
 	
-	public Database(String colunaRotulo) {
+	private Database() {}
+	
+	private Database(String colunaRotulo) {
 		this.colunaRotulo = colunaRotulo;
 		this.tuplas = new ArrayList<>();
 	}
@@ -22,7 +28,7 @@ public class Database {
 		return tuplas;
 	}
 
-	public void setTuplas(List<Tupla> tuplas) {
+	private void setTuplas(List<Tupla> tuplas) {
 		this.tuplas = tuplas;
 	}
 	
@@ -53,7 +59,7 @@ public class Database {
 		return valoresUnicosColunaRotulo;
 	}
 	
-	public Double calculaEntropia() {
+	private Double calculaEntropia() {
 		return this.calculaEntropia(tuplas);
 	}
 	
@@ -63,16 +69,15 @@ public class Database {
 		
 		Double entropia = 0D;
 		
-		for(String frequencia : frequencias.keySet()) {
-			var valor = frequencias.get(frequencia);
-			
-			entropia += -(valor != 0 ? valor * Util.log2(valor) : 0D);
+		for(String chavesFrequencia : frequencias.keySet()) {
+			var frequencia = frequencias.get(chavesFrequencia);
+			entropia += -(frequencia != 0 ? frequencia * Util.log2(frequencia) : 0D);
 		}
 		
 		return entropia;
 	}
 	
-	public List<Tupla> filtraPorValorColuna(String colunaChave, String valor) {
+	private List<Tupla> filtraPorValorColuna(String colunaChave, String valor) {
 		return this.tuplas.stream().
 				filter(t -> t.getAsString(colunaChave).
 						equals(valor)).collect(Collectors.toList());
@@ -91,7 +96,7 @@ public class Database {
 		return ganho;
 	}
 	
-	public Map<String, Double> calculoGanho() {
+	public Map<String, Double> calcularGanho() {
 		
 		List<String> chaves = new ArrayList<>(tuplas.get(0).getChaves());
 		
@@ -102,5 +107,62 @@ public class Database {
 				toMap(c -> c, c -> calculoGanho(c)));
 		
 		return ganhos;
+	}
+	
+	public static Database carregaDatabase(String arquivoCSV) {
+
+		List<String> labels = new ArrayList<>();
+		List<Tupla> tuplas = new ArrayList<>();
+		TuplaBuilder tupla = new TuplaBuilder();
+
+		BufferedReader br = null;
+		String linha = "";
+		String csvDivisor = ",";
+		int index = 0;
+		try {
+
+			br = new BufferedReader(new FileReader(arquivoCSV));
+			while ((linha = br.readLine()) != null) {
+
+				String[] values = linha.split(csvDivisor);
+
+				for (int i = 0; i < values.length; i++) {
+					String value = values[i];
+					if (index < 1) {
+						labels.add(value);
+					} else {
+						try {
+							Double numericValue = Double.parseDouble(value);
+							tupla.add(labels.get(i), numericValue);
+						} catch(NumberFormatException e) {
+							tupla.add(labels.get(i), value);
+						}
+					}
+				}
+				
+				if(index > 0) {
+					tuplas.add(tupla.build());
+				}
+
+				index++;
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		Database db = new Database(labels.get(labels.size()-1));
+		db.setTuplas(tuplas);
+		return db;
 	}
 }
