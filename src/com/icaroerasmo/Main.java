@@ -12,7 +12,7 @@ public class Main {
 		
 		System.out.println("Devo jogar tênis?");
 		
-		while(!db.isFinished()) {
+		while(!db.finalizado()) {
 			var ganhos = db.calcularGanho();
 			var maiorGanhoChave = "";
 			var maiorGanhoValor = 0D;

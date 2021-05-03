@@ -115,8 +115,7 @@ public class Database {
 		this.tuplas = filtraPorValorColuna(colunaChave, valor);
 	}
 	
-	public boolean isFinished() {
-
+	public boolean finalizado() {
 		var first = tuplas.get(0);
 		return !tuplas.stream().
 				anyMatch(t -> !t.getAsString(colunaRotulo).
