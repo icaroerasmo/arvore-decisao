@@ -48,6 +48,10 @@ public class Tupla {
 		pares.add(new Par(chave, valor.toLowerCase()));
 	}
 	
+	public boolean isEmpty() {
+		return pares.isEmpty();
+	}
+	
 	private class Par {
 		
 		private String chave;

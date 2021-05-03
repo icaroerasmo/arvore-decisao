@@ -2,10 +2,8 @@ package com.icaroerasmo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,17 +39,9 @@ public class Database {
 			Integer quantidade = valoresColunaRotulo.stream().
 				filter(v -> v.equals(valor)).
 				map(v -> 1).
-				reduce(
-						(Integer _valor, Integer acumulador) -> _valor + acumulador
-						).orElse(0);
+				reduce((v,ac) -> v + ac).orElse(0);
 			frequencias.put(valor, ((double)quantidade)/valoresColunaRotulo.size());
 		}
-		
-		frequencias = 
-				frequencias.entrySet().stream()
-			    .sorted(Entry.<String, Double>comparingByValue().reversed())
-			    .collect(Collectors.toMap(Entry::getKey, Entry::getValue,
-			                              (e1, e2) -> e1, LinkedHashMap::new));
 		
 		return frequencias;
 	}
@@ -81,7 +71,7 @@ public class Database {
 			if(entropia != null) {
 				entropia -= tmp;
 			} else {
-				entropia = tmp;
+				entropia = (-1 * tmp);
 			}
 		}
 		
@@ -107,19 +97,20 @@ public class Database {
 		return ganho;
 	}
 	
-	public Double calculoGanho() {
-		var ganho = 0D;
+	public Map<String, Double> calculoGanho() {
 		
 		List<String> chaves = new ArrayList<>(tuplas.get(0).getChaves());
+		
 		chaves.remove(colunaRotulo);
 		
-		for(String coluna : chaves) {
-			var _ganho = calculoGanho(coluna);
-			ganho += _ganho;
+		Map<String, Double> ganhos = chaves.stream().collect(
+				Collectors.
+				toMap(c -> c, c -> calculoGanho(c)));
+		
+		for(String coluna : ganhos.keySet()) {
+			System.out.println(coluna + ": "+ganhos.get(coluna));
 		}
 		
-		return ganho;
+		return ganhos;
 	}
-	
-	
 }
