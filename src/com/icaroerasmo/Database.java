@@ -107,10 +107,6 @@ public class Database {
 				Collectors.
 				toMap(c -> c, c -> calculoGanho(c)));
 		
-		for(String coluna : ganhos.keySet()) {
-			System.out.println(coluna + ": "+ganhos.get(coluna));
-		}
-		
 		return ganhos;
 	}
 }
