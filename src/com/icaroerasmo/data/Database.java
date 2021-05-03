@@ -116,13 +116,14 @@ public class Database {
 	}
 	
 	public boolean isFinished() {
+
 		var first = tuplas.get(0);
 		return !tuplas.stream().
 				anyMatch(t -> !t.getAsString(colunaRotulo).
 						equals(first.getAsString(colunaRotulo)));
 	}
 	
-	public String resultado() {
+	public String resultado() {		
 		return tuplas.get(0).getAsString(colunaRotulo);
 	}
 	

@@ -24,7 +24,7 @@ public class Main {
 				}
 			}
 			
-			System.out.println("Qual valor de "+maiorGanhoChave+"?");
+			System.out.println("\nQual valor de "+maiorGanhoChave+"?");
 			
 			var resposta = s.nextLine();
 			db.geraSubsetPorValorColuna(maiorGanhoChave, resposta);
