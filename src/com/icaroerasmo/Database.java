@@ -26,13 +26,13 @@ public class Database {
 		this.tuplas = tuplas;
 	}
 	
-	private Map<String, Double> frequencias(List<Tupla> tuplas, String coluna) {
+	private Map<String, Double> frequencias(List<Tupla> tuplas) {
 		Map<String, Double> frequencias = new HashMap<>();
 		
-		Set<String> valoresUnicosColunaRotulo = valoresUnicosColuna(coluna);
+		Set<String> valoresUnicosColunaRotulo = valoresUnicosColuna(colunaRotulo);
 		
 		List<String> valoresColunaRotulo = tuplas.stream().
-				map(t -> t.getAsString(coluna)).
+				map(t -> t.getAsString(colunaRotulo)).
 				collect(Collectors.toList());
 		
 		for(String valor : valoresUnicosColunaRotulo) {
@@ -40,7 +40,7 @@ public class Database {
 				filter(v -> v.equals(valor)).
 				map(v -> 1).
 				reduce((v,ac) -> v + ac).orElse(0);
-			frequencias.put(valor, ((double)quantidade)/valoresColunaRotulo.size());
+			frequencias.put(valor, ((double)quantidade)/tuplas.size());
 		}
 		
 		return frequencias;
@@ -54,12 +54,12 @@ public class Database {
 	}
 	
 	public Double calculaEntropia() {
-		return this.calculaEntropia(tuplas, colunaRotulo);
+		return this.calculaEntropia(tuplas);
 	}
 	
-	private Double calculaEntropia(List<Tupla> tuplas, String colunaChave) {
+	private Double calculaEntropia(List<Tupla> tuplas) {
 		
-		Map<String, Double> frequencias = frequencias(tuplas, colunaChave);
+		Map<String, Double> frequencias = frequencias(tuplas);
 		
 		Double entropia = null;
 		
@@ -88,10 +88,10 @@ public class Database {
 		
 		var ganho = calculaEntropia();
 		
-		for(String valorUnico : valoresUnicosColuna(colunaAnalise)) {
-			List<Tupla> subset = filtraPorValorColuna(colunaAnalise, valorUnico);
-			Map<String, Double> frequencias = frequencias(subset, colunaAnalise);
-			ganho -= frequencias.get(valorUnico) * calculaEntropia(subset, colunaAnalise);
+		for(String valorUnicoSubset : valoresUnicosColuna(colunaAnalise)) {
+			List<Tupla> subset = filtraPorValorColuna(colunaAnalise, valorUnicoSubset);
+			Double valorUnico = ((double) subset.size()) / tuplas.size();
+			ganho -= (valorUnico != null ? valorUnico : 0) * calculaEntropia(subset);
 		}
 		
 		return ganho;
