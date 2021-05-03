@@ -111,6 +111,21 @@ public class Database {
 		return valoresUnicosColunaRotulo;
 	}
 	
+	public void geraSubsetPorValorColuna(String colunaChave, String valor) {
+		this.tuplas = filtraPorValorColuna(colunaChave, valor);
+	}
+	
+	public boolean isFinished() {
+		var first = tuplas.get(0);
+		return !tuplas.stream().
+				anyMatch(t -> !t.getAsString(colunaRotulo).
+						equals(first.getAsString(colunaRotulo)));
+	}
+	
+	public String resultado() {
+		return tuplas.get(0).getAsString(colunaRotulo);
+	}
+	
 	public static Database carregaDatabase(String arquivoCSV) {
 
 		List<String> labels = new ArrayList<>();
