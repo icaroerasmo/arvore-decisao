@@ -61,18 +61,12 @@ public class Database {
 		
 		Map<String, Double> frequencias = frequencias(tuplas);
 		
-		Double entropia = null;
+		Double entropia = 0D;
 		
 		for(String frequencia : frequencias.keySet()) {
 			var valor = frequencias.get(frequencia);
 			
-			var tmp = (valor != 0 ? valor * Util.log2(valor) : 0D);
-			
-			if(entropia != null) {
-				entropia -= tmp;
-			} else {
-				entropia = (-1 * tmp);
-			}
+			entropia += -(valor != 0 ? valor * Util.log2(valor) : 0D);
 		}
 		
 		return entropia;
